@@ -56,17 +56,14 @@ COPY requirements.txt /workspace/requirements.txt
 RUN python3.11 -m pip install -r /workspace/requirements.txt
 
 # 复制项目代码（开发容器中，代码通常通过 volume 挂载，但这里先复制作为基础）
-COPY src/ /workspace/src/
+# 注意：实际使用时，建议通过 -v 参数挂载整个项目目录
+COPY . /workspace/
 
-# 设置工作目录为 src
-WORKDIR /workspace/src
+# 设置工作目录为项目根目录（这样可以访问 .env 文件）
+WORKDIR /workspace
 
-# 创建非 root 用户（可选，用于开发）
-RUN useradd -m -u 1000 developer && \
-    chown -R developer:developer /workspace
-
-# 切换到非 root 用户
-USER developer
+# 保持 root 用户，不创建非 root 用户
+# 这样容器可以访问所有文件，包括 .env
 
 # 默认命令（可以根据需要修改）
 CMD ["/bin/bash"]

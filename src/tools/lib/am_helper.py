@@ -12,7 +12,7 @@ from .logger_config import setup_logger
 from .mcp_helper import MCPHelper, MCPRequest, MCPResponse
 
 logger = setup_logger(__name__)
-from .openapi_client import OpenAPIClient, SysomFrameworkClient, AlibabaCloudSDKClient
+from .openapi_client import OpenAPIClient, AlibabaCloudSDKClient
 from .api_registry import APIRegistry, SupportMode
 from alibabacloud_sysom20231230 import models as sysom_20231230_models
 from Tea.model import TeaModel

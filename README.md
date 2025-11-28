@@ -35,10 +35,11 @@
 
 #### 方式一：交互式运行（推荐用于开发）
 
+**挂载整个项目目录（包括 .env 文件）：**
+
 ```bash
 docker run -it --rm \
-  -v $(pwd)/src:/workspace/src \
-  -v $(pwd)/requirements.txt:/workspace/requirements.txt \
+  -v $(pwd):/workspace \
   --name sysom-mcp-dev \
   sysom-mcp-dev:latest
 ```
@@ -46,16 +47,20 @@ docker run -it --rm \
 **参数说明：**
 - `-it`: 交互式终端
 - `--rm`: 容器退出时自动删除
-- `-v $(pwd)/src:/workspace/src`: 挂载源代码目录，实现代码实时同步
-- `-v $(pwd)/requirements.txt:/workspace/requirements.txt`: 挂载 requirements.txt（可选）
+- `-v $(pwd):/workspace`: 挂载整个项目目录到容器，包括 `.env` 文件，实现代码实时同步
 - `--name sysom-mcp-dev`: 指定容器名称
+
+**注意：**
+- 容器以 root 用户运行，可以访问所有文件（包括 `.env`）
+- 工作目录为 `/workspace`（项目根目录），可以直接访问 `.env` 文件
+- 代码修改会实时同步到宿主机
 
 #### 方式二：后台运行并进入
 
 ```bash
-# 启动容器
+# 启动容器（挂载整个项目目录）
 docker run -d \
-  -v $(pwd)/src:/workspace/src \
+  -v $(pwd):/workspace \
   --name sysom-mcp-dev \
   sysom-mcp-dev:latest \
   tail -f /dev/null
@@ -73,18 +78,32 @@ docker-compose exec dev /bin/bash
 
 ### 在容器内工作
 
-进入容器后，工作目录默认为 `/workspace/src`，所有源代码已挂载，修改会实时同步到宿主机。
+进入容器后，工作目录默认为 `/workspace`（项目根目录），所有文件已挂载，修改会实时同步到宿主机。
 
 ```bash
 # 查看 Python 版本
 python --version
+
+# 查看项目文件（包括 .env）
+ls -la
+
+# 进入源代码目录
+cd src
 
 # 运行测试
 python -m pytest tests/
 
 # 运行特定模块
 python -m mcp.am_mcp
+
+# 运行客户端测试（需要 .env 文件中的 DASHSCOPE_API_KEY）
+python tests/client.py mcp/am_mcp.py
 ```
+
+**重要提示：**
+- `.env` 文件位于项目根目录 `/workspace/.env`
+- 确保 `.env` 文件中已配置 `DASHSCOPE_API_KEY` 等必要的环境变量
+- 容器以 root 用户运行，拥有所有文件访问权限
 
 ### 停止和清理
 
@@ -104,8 +123,9 @@ docker rmi sysom-mcp-dev:latest
 - **Python 3.11**: 稳定版本
 - **预装依赖**: 所有 `requirements.txt` 中的依赖已安装
 - **系统工具**: 包含 git、vim、curl 等常用开发工具
-- **非 root 用户**: 使用 `developer` 用户运行，提高安全性
+- **Root 用户**: 容器以 root 用户运行，可以访问所有文件（包括 `.env`）
 - **代码挂载**: 支持代码实时同步，无需重新构建镜像
+- **项目根目录**: 工作目录为项目根目录，可直接访问 `.env` 文件
 
 ## 常见问题
 
@@ -154,6 +174,7 @@ sysom_mcp/
 ## 注意事项
 
 - 开发容器中的代码通过 volume 挂载，修改会实时同步
-- 容器内使用非 root 用户 `developer`（UID 1000）
+- 容器以 root 用户运行，拥有所有文件访问权限
+- `.env` 文件位于项目根目录，确保已正确配置必要的环境变量
 - 如需使用网络服务（如数据库、Redis），确保网络配置正确
 

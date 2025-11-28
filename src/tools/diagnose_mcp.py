@@ -7,7 +7,7 @@ import aiohttp
 from cmg_base import LoadBalancingStrategy, dispatch_service_discovery
 from fastmcp import Context, FastMCP
 from pydantic import BaseModel, ConfigDict, Field
-from sysom_utils import ConfigParser, SysomFramework
+# from sysom_utils import ConfigParser, SysomFramework
 from lib.logger_config import setup_logger
 
 logger = setup_logger(__name__)
@@ -71,14 +71,14 @@ class DiagnoseResult(BaseModel):
 mcp = FastMCP("SysomDiagnoseMCP")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-YAML_GLOBAL_CONFIG_PATH = "/etc/sysom/config.yml"
-YAML_SERVICE_CONFIG_PATH = f"{BASE_DIR}/config.yml"
+# YAML_GLOBAL_CONFIG_PATH = "/etc/sysom/config.yml"
+# YAML_SERVICE_CONFIG_PATH = f"{BASE_DIR}/config.yml"
 
-YAML_CONFIG = ConfigParser(YAML_GLOBAL_CONFIG_PATH, YAML_SERVICE_CONFIG_PATH)
+# YAML_CONFIG = ConfigParser(YAML_GLOBAL_CONFIG_PATH, YAML_SERVICE_CONFIG_PATH)
 
-discovery = dispatch_service_discovery(YAML_CONFIG.get_cmg_url())
+# discovery = dispatch_service_discovery(YAML_CONFIG.get_cmg_url())
 
-serviceInstance = discovery.get_instance("sysom_openapi", LoadBalancingStrategy.RANDOM)
+# serviceInstance = discovery.get_instance("sysom_openapi", LoadBalancingStrategy.RANDOM)
 
 
 class _DiagnoseClient:

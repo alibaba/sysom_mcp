@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Literal
+import click
 from fastmcp import FastMCP, Context
 from pydantic import Field
 from lib.logger_config import setup_logger
@@ -60,8 +61,11 @@ async def packetdrop(
             result: 诊断结果，当code为Success时包含诊断结果
     """
     try:
+        # client = ClientFactory.create_client(
+        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+        #     uid=uid
+        # )
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'sysom_framework'),
             uid=uid
         )
         helper = DiagnosisMCPHelper(client, timeout=150, poll_interval=1)
@@ -133,8 +137,11 @@ async def netjitter(
             result: 诊断结果，当code为Success时包含诊断结果
     """
     try:
+        # client = ClientFactory.create_client(
+        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+        #     uid=uid
+        # )
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'sysom_framework'),
             uid=uid
         )
         helper = DiagnosisMCPHelper(client, timeout=150, poll_interval=1)
@@ -160,10 +167,32 @@ async def netjitter(
             task_id=""
         )
 
-def create_mcp_server():
-    return mcp
+@click.command()
+@click.option("--stdio", "run_mode", flag_value="stdio", default=True, help="Run in stdio mode")
+@click.option("--sse", "run_mode", flag_value="sse", help="Run in SSE mode")
+@click.option("--host", default="127.0.0.1", help="Host to bind to (for SSE mode, default: 127.0.0.1)")
+@click.option("--port", default=7130, type=int, help="Port to bind to (for SSE mode, default: 7130)")
+@click.option("--path", default="/mcp/net_diag", help="Path for SSE endpoint (default: /mcp/net_diag)")
+def main(run_mode: Literal["stdio", "sse"], host: str, port: int, path: str) -> None:
+    """Run MCP server in stdio or SSE mode"""
+    if run_mode == "sse":
+        # SSE 模式：直接使用 mcp.run()，它应该支持这些参数
+        logger.info(f"Starting MCP server in SSE mode on {host}:{port}{path}")
+        # FastMCP 的 run() 方法应该支持 transport、host、port、path 参数
+        mcp.run(transport="sse", host=host, port=port, path=path)
+    else:
+        # stdio 模式
+        logger.info("Starting MCP server in stdio mode")
+        mcp.run(transport="stdio")
+
 
 if __name__ == "__main__":
-    # 日志级别已通过 logger_config 配置
-    create_mcp_server().run(transport="stdio")
+    main()
+
+# def create_mcp_server():
+#     return mcp
+
+# if __name__ == "__main__":
+#     # 日志级别已通过 logger_config 配置
+#     create_mcp_server().run(transport="stdio")
 

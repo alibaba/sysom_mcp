@@ -3,6 +3,7 @@ from fastmcp import FastMCP, Context
 from pydantic import Field
 from lib.logger_config import setup_logger
 import click
+from alibabacloud_sysom20231230 import models as sys_om20231230_models
 
 logger = setup_logger(__name__)
 from lib import (
@@ -262,19 +263,35 @@ async def list_all_instances(
     """
     try:
         # 使用ClientFactory创建客户端
+        # client = ClientFactory.create_client(
+        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+        #     uid=uid,
+        #     service_name="sysom_am"
+        # )
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            service_name="sysom_am"
+            # service_name="sysom_am"
         )
         
         # 创建MCP Helper
         helper = AMMCPHelper(client)
         
         # 创建MCP请求
-        mcp_request = ListAllInstancesMCPRequest(
+        # mcp_request = ListAllInstancesMCPRequest(
+        #     region=region,
+        #     managedType=managedType,
+        #     instanceType=instanceType,
+        #     pluginId=pluginId,
+        #     filters=filters,
+        #     current=current,
+        #     pageSize=pageSize,
+        #     maxResults=maxResults,
+        #     nextToken=nextToken,
+        # )
+        mcp_request = sys_om20231230_models.ListAllInstancesRequest(
             region=region,
-            managedType=managedType,
+            # managedType=managedType,
             instanceType=instanceType,
             pluginId=pluginId,
             filters=filters,
@@ -327,11 +344,18 @@ async def list_pods_of_instance(
     """
     try:
         # 使用ClientFactory创建客户端
+        # client = ClientFactory.create_client(
+        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+        #     uid=uid,
+        #     service_name="sysom_am"
+        # )
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            service_name="sysom_am"
+            # service_name="sysom_am"
         )
+        
+        
         
         # 创建MCP Helper
         helper = AMMCPHelper(client)
@@ -391,10 +415,15 @@ async def list_clusters(
     """
     try:
         # 使用ClientFactory创建客户端
+        # client = ClientFactory.create_client(
+        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+        #     uid=uid,
+        #     service_name="sysom_am"
+        # )
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            service_name="sysom_am"
+            # service_name="sysom_am"
         )
         
         # 创建MCP Helper
@@ -459,17 +488,30 @@ async def list_instances(
     try:
         logger.info(f"creating client")
         # 使用ClientFactory创建客户端
+        # client = ClientFactory.create_client(
+        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+        #     uid=uid,
+        #     service_name="sysom_am"
+        # )
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
+            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            service_name="sysom_am"
+            # service_name="sysom_am"
         )
         logger.info(f"created client")
         # 创建MCP Helper
         helper = AMMCPHelper(client)
         
         # 创建MCP请求
-        mcp_request = ListInstancesMCPRequest(
+        # mcp_request = ListInstancesMCPRequest(
+        #     instance=instance,
+        #     status=status,
+        #     region=region,
+        #     clusterId=clusterId,
+        #     current=current,
+        #     pageSize=pageSize,
+        # )
+        mcp_request = sys_om20231230_models.ListInstancesRequest(
             instance=instance,
             status=status,
             region=region,
@@ -477,7 +519,6 @@ async def list_instances(
             current=current,
             pageSize=pageSize,
         )
-        
         # 调用Helper方法
         response = await helper.list_instances(mcp_request)
         return ListInstancesMCPResponse(**response.model_dump())

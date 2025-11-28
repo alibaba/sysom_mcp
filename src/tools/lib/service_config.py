@@ -33,9 +33,10 @@ class OpenAPIConfig:
     
     def __init__(self):
         self.type = os.getenv("OPENAPI_TYPE", "access_key")
-        self.access_key_id = os.getenv("OPENAPI_ACCESS_KEY_ID")
-        self.access_key_secret = os.getenv("OPENAPI_ACCESS_KEY_SECRET")
-        self.security_token = os.getenv("OPENAPI_SECURITY_TOKEN")
+        # 兼容两种命名方式：OPENAPI_ACCESS_KEY_ID 或 ACCESS_KEY_ID
+        self.access_key_id = os.getenv("OPENAPI_ACCESS_KEY_ID") or os.getenv("ACCESS_KEY_ID")
+        self.access_key_secret = os.getenv("OPENAPI_ACCESS_KEY_SECRET") or os.getenv("ACCESS_KEY_SECRET")
+        self.security_token = os.getenv("OPENAPI_SECURITY_TOKEN") or os.getenv("SECURITY_TOKEN")
 
 
 class LLMConfig:

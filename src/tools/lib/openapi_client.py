@@ -238,63 +238,80 @@ class ClientFactory:
     
     @staticmethod
     def create_client(
-        deploy_mode: Optional[str] = None,
+        # deploy_mode: Optional[str] = None,
         uid: Optional[str] = None,
-        service_name: str = "sysom_openapi",
-        api_name: Optional[str] = None,
+        # service_name: str = "sysom_openapi",
+        # api_name: Optional[str] = None,
         **kwargs
     ) -> OpenAPIClient:
         """
         创建OpenAPI客户端实例
         
         Args:
-            deploy_mode: 部署模式（sysom_framework或alibabacloud_sdk），如果为None则从配置读取
+            # deploy_mode: 部署模式（sysom_framework或alibabacloud_sdk），如果为None则从配置读取
             uid: 用户ID（sysom_framework模式需要）
-            service_name: 服务名称（sysom_framework模式使用）
-            api_name: 要调用的API名称（可选，用于根据接口要求自动选择客户端）
+            # service_name: 服务名称（sysom_framework模式使用）
+            # api_name: 要调用的API名称（可选，用于根据接口要求自动选择客户端）
             **kwargs: 其他参数（alibabacloud_sdk模式可能需要access_key_id等）
             
         Returns:
             OpenAPIClient: 客户端实例
         """
         # 如果提供了api_name，检查接口的支持模式
-        if api_name:
-            registry = APIRegistry()
-            route = registry.get_route(api_name)
-            if route:
-                if route.support_mode == SupportMode.FRAMEWORK_ONLY:
-                    # 强制使用SysomFramework
-                    deploy_mode = "sysom_framework"
-                elif route.support_mode == SupportMode.SDK_ONLY:
-                    # 强制使用AlibabaCloudSDK
-                    deploy_mode = "alibabacloud_sdk"
-                # 如果是BOTH，则使用配置的deploy_mode
+        # if api_name:
+        #     registry = APIRegistry()
+        #     route = registry.get_route(api_name)
+        #     if route:
+        #         if route.support_mode == SupportMode.FRAMEWORK_ONLY:
+        #             # 强制使用SysomFramework
+        #             deploy_mode = "sysom_framework"
+        #         elif route.support_mode == SupportMode.SDK_ONLY:
+        #             # 强制使用AlibabaCloudSDK
+        #             deploy_mode = "alibabacloud_sdk"
+        #         # 如果是BOTH，则使用配置的deploy_mode
         
-        if deploy_mode is None:
-            deploy_mode = getattr(SERVICE_CONFIG, 'deploy_mode', 'sysom_framework')
+        # if deploy_mode is None:
+        #     deploy_mode = getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk')
         
-        if deploy_mode == "alibabacloud_sdk":
-            # 从配置或kwargs中获取认证信息
-            mode = kwargs.get("mode", getattr(SERVICE_CONFIG, 'type', 'access_key'))
-            access_key_id = kwargs.get("access_key_id") or getattr(SERVICE_CONFIG, 'ACCESS_KEY_ID', None)
-            access_key_secret = kwargs.get("access_key_secret") or getattr(SERVICE_CONFIG, 'ACCESS_KEY_SECRET', None)
-            security_token = kwargs.get("security_token") or getattr(SERVICE_CONFIG, 'security_token', None)
-            region_id = kwargs.get("region_id", "cn-hangzhou")
+        # 从配置或kwargs中获取认证信息
+        # 所有配置都从 SERVICE_CONFIG.openapi 中读取（service_config.py 已从 .env 文件加载）
+        mode = kwargs.get("mode") or SERVICE_CONFIG.openapi.type
+        access_key_id = kwargs.get("access_key_id") or SERVICE_CONFIG.openapi.access_key_id
+        access_key_secret = kwargs.get("access_key_secret") or SERVICE_CONFIG.openapi.access_key_secret
+        security_token = kwargs.get("security_token") or SERVICE_CONFIG.openapi.security_token
+        region_id = kwargs.get("region_id", "cn-hangzhou")
             
-            return AlibabaCloudSDKClient(
-                mode=mode,
-                access_key_id=access_key_id,
-                access_key_secret=access_key_secret,
-                security_token=security_token,
-                region_id=region_id
-            )
-        else:
-            # sysom_framework模式
-            if uid is None:
-                raise ValueError("sysom_framework模式需要提供uid参数")
+        return AlibabaCloudSDKClient(
+            mode=mode,
+            access_key_id=access_key_id,
+            access_key_secret=access_key_secret,
+            security_token=security_token,
+            region_id=region_id,
+        )
             
-            return SysomFrameworkClient(
-                uid=uid,
-                service_name=service_name
-            )
+        # if deploy_mode == "alibabacloud_sdk":
+        #     # 从配置或kwargs中获取认证信息
+        #     # 所有配置都从 SERVICE_CONFIG.openapi 中读取（service_config.py 已从 .env 文件加载）
+        #     mode = kwargs.get("mode") or SERVICE_CONFIG.openapi.type
+        #     access_key_id = kwargs.get("access_key_id") or SERVICE_CONFIG.openapi.access_key_id
+        #     access_key_secret = kwargs.get("access_key_secret") or SERVICE_CONFIG.openapi.access_key_secret
+        #     security_token = kwargs.get("security_token") or SERVICE_CONFIG.openapi.security_token
+        #     region_id = kwargs.get("region_id", "cn-hangzhou")
+            
+        #     return AlibabaCloudSDKClient(
+        #         mode=mode,
+        #         access_key_id=access_key_id,
+        #         access_key_secret=access_key_secret,
+        #         security_token=security_token,
+        #         region_id=region_id
+        #     )
+        # else:
+        #     # sysom_framework模式
+        #     if uid is None:
+        #         raise ValueError("sysom_framework模式需要提供uid参数")
+            
+        #     return SysomFrameworkClient(
+        #         uid=uid,
+        #         service_name=service_name
+        #     )
 
