@@ -61,10 +61,6 @@ async def packetdrop(
             result: 诊断结果，当code为Success时包含诊断结果
     """
     try:
-        # client = ClientFactory.create_client(
-        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
-        #     uid=uid
-        # )
         client = ClientFactory.create_client(
             uid=uid
         )
@@ -188,11 +184,4 @@ def main(run_mode: Literal["stdio", "sse"], host: str, port: int, path: str) -> 
 
 if __name__ == "__main__":
     main()
-
-# def create_mcp_server():
-#     return mcp
-
-# if __name__ == "__main__":
-#     # 日志级别已通过 logger_config 配置
-#     create_mcp_server().run(transport="stdio")
 

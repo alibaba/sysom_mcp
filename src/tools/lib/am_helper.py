@@ -13,7 +13,7 @@ from .mcp_helper import MCPHelper, MCPRequest, MCPResponse
 
 logger = setup_logger(__name__)
 from .openapi_client import OpenAPIClient, AlibabaCloudSDKClient
-from .api_registry import APIRegistry, SupportMode
+from .api_registry import APIRegistry
 from alibabacloud_sysom20231230 import models as sysom_20231230_models
 from Tea.model import TeaModel
 
@@ -50,18 +50,11 @@ class AMMCPHelper(MCPHelper):
         from alibabacloud_sysom20231230 import models as sysom_20231230_models
         
         api_name = "list_all_instances"
-        url = "/api/v1/am/instance/listAllInstances"
         
         # 注册路由（如果尚未注册）
         registry = APIRegistry()
         if registry.get_route(api_name) is None:
-            # 注册Framework路由
-            registry.register_framework(
-                api_name=api_name,
-                url_pattern=url,
-                method="GET",
-                service_name="sysom_am"
-            )
+
             # 注册SDK路由
             registry.register_sdk(
                 api_name=api_name,
@@ -70,16 +63,10 @@ class AMMCPHelper(MCPHelper):
                 client_method=lambda client, req: client.list_all_instances_async(req)
             )
         
-        # 根据客户端类型准备参数
-        if isinstance(self.client, SysomFrameworkClient):
-            # Framework调用：传入字典
-            request_params = request.model_dump(exclude_none=True, by_alias=True)
-            # logger.error(f"list_all_instances request (Framework): {request_params}")
-        else:
-            # SDK调用：传入TeaModel
-            params = request.model_dump(exclude_none=True, by_alias=True)
-            request_params = sysom_20231230_models.ListAllInstancesRequest.from_map(params)
-            # logger.error(f"list_all_instances request (SDK): {request_params.to_map()}")
+
+        # SDK调用：传入TeaModel
+        params = request.model_dump(exclude_none=True, by_alias=True)
+        request_params = sysom_20231230_models.ListAllInstancesRequest.from_map(params)
         
         # 调用API
         success, response_data, error_msg = await self.client.call_api(
@@ -114,18 +101,10 @@ class AMMCPHelper(MCPHelper):
             MCPResponse: 返回MCPResponse，调用方需要转换为ListPodsOfInstanceMCPResponse
         """
         api_name = "list_pods_of_instance"
-        url = "/api/v1/am/instance/list_pod_of_instance"
         
         # 注册路由（如果尚未注册）
         registry = APIRegistry()
         if registry.get_route(api_name) is None:
-            # 注册Framework路由
-            registry.register_framework(
-                api_name=api_name,
-                url_pattern=url,
-                method="GET",
-                service_name="sysom_am"
-            )
             # 注册SDK路由
             registry.register_sdk(
                 api_name=api_name,
@@ -134,16 +113,10 @@ class AMMCPHelper(MCPHelper):
                 client_method=lambda client, req: client.list_pods_of_instance_async(req)
             )
         
-        # 根据客户端类型准备参数
-        if isinstance(self.client, SysomFrameworkClient):
-            # Framework调用：传入字典
-            request_params = request.model_dump(exclude_none=True, by_alias=True)
-            # logger.error(f"list_pods_of_instance request (Framework): {request_params}")
-        else:
-            # SDK调用：传入TeaModel
-            params = request.model_dump(exclude_none=True, by_alias=True)
-            request_params = sysom_20231230_models.ListPodsOfInstanceRequest.from_map(params)
-            # logger.error(f"list_pods_of_instance request (SDK): {request_params.to_map()}")
+        # SDK调用：传入TeaModel
+        params = request.model_dump(exclude_none=True, by_alias=True)
+        request_params = sysom_20231230_models.ListPodsOfInstanceRequest.from_map(params)
+        # logger.error(f"list_pods_of_instance request (SDK): {request_params.to_map()}")
         
         # 调用API
         success, response_data, error_msg = await self.client.call_api(
@@ -180,18 +153,10 @@ class AMMCPHelper(MCPHelper):
         from alibabacloud_sysom20231230 import models as sysom_20231230_models
         
         api_name = "list_clusters"
-        url = "/api/v1/am/cluster/list_clusters"
         
         # 注册路由（如果尚未注册）
         registry = APIRegistry()
         if registry.get_route(api_name) is None:
-            # 注册Framework路由
-            registry.register_framework(
-                api_name=api_name,
-                url_pattern=url,
-                method="GET",
-                service_name="sysom_am"
-            )
             # 注册SDK路由
             registry.register_sdk(
                 api_name=api_name,
@@ -199,17 +164,10 @@ class AMMCPHelper(MCPHelper):
                 response_model=sysom_20231230_models.ListClustersResponse,
                 client_method=lambda client, req: client.list_clusters_async(req)
             )
-        
-        # 根据客户端类型准备参数
-        if isinstance(self.client, SysomFrameworkClient):
-            # Framework调用：传入字典
-            request_params = request.model_dump(exclude_none=True, by_alias=True)
-            # logger.error(f"list_clusters request (Framework): {request_params}")
-        else:
-            # SDK调用：传入TeaModel
-            params = request.model_dump(exclude_none=True, by_alias=True)
-            request_params = sysom_20231230_models.ListClustersRequest.from_map(params)
-            # logger.error(f"list_clusters request (SDK): {request_params.to_map()}")
+
+        # SDK调用：传入TeaModel
+        params = request.model_dump(exclude_none=True, by_alias=True)
+        request_params = sysom_20231230_models.ListClustersRequest.from_map(params)
         
         # 调用API
         success, response_data, error_msg = await self.client.call_api(
@@ -246,18 +204,11 @@ class AMMCPHelper(MCPHelper):
         from alibabacloud_sysom20231230 import models as sysom_20231230_models
         
         api_name = "list_instances"
-        url = "/api/v1/am/instance/list_instances"
         
         # 注册路由（如果尚未注册）
         registry = APIRegistry()
         if registry.get_route(api_name) is None:
-            # 注册Framework路由
-            registry.register_framework(
-                api_name=api_name,
-                url_pattern=url,
-                method="GET",
-                service_name="sysom_am"
-            )
+
             # 注册SDK路由
             registry.register_sdk(
                 api_name=api_name,
@@ -266,16 +217,9 @@ class AMMCPHelper(MCPHelper):
                 client_method=lambda client, req: client.list_instances_async(req)
             )
         
-        # 根据客户端类型准备参数
-        if isinstance(self.client, SysomFrameworkClient):
-            # Framework调用：传入字典
-            request_params = request.model_dump(exclude_none=True, by_alias=True)
-            # logger.error(f"list_instances request (Framework): {request_params}")
-        else:
-            # SDK调用：传入TeaModel
-            params = request.model_dump(exclude_none=True, by_alias=True)
-            request_params = sysom_20231230_models.ListInstancesRequest.from_map(params)
-            # logger.error(f"list_instances request (SDK): {request_params.to_map()}")
+        # SDK调用：传入TeaModel
+        params = request.model_dump(exclude_none=True, by_alias=True)
+        request_params = sysom_20231230_models.ListInstancesRequest.from_map(params)
         
         # 调用API
         success, response_data, error_msg = await self.client.call_api(

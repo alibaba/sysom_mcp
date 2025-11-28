@@ -263,32 +263,15 @@ async def list_all_instances(
     """
     try:
         # 使用ClientFactory创建客户端
-        # client = ClientFactory.create_client(
-        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
-        #     uid=uid,
-        #     service_name="sysom_am"
-        # )
         client = ClientFactory.create_client(
-            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            # service_name="sysom_am"
         )
         
         # 创建MCP Helper
         helper = AMMCPHelper(client)
         
         # 创建MCP请求
-        # mcp_request = ListAllInstancesMCPRequest(
-        #     region=region,
-        #     managedType=managedType,
-        #     instanceType=instanceType,
-        #     pluginId=pluginId,
-        #     filters=filters,
-        #     current=current,
-        #     pageSize=pageSize,
-        #     maxResults=maxResults,
-        #     nextToken=nextToken,
-        # )
+
         mcp_request = sys_om20231230_models.ListAllInstancesRequest(
             region=region,
             # managedType=managedType,
@@ -344,15 +327,9 @@ async def list_pods_of_instance(
     """
     try:
         # 使用ClientFactory创建客户端
-        # client = ClientFactory.create_client(
-        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
-        #     uid=uid,
-        #     service_name="sysom_am"
-        # )
+
         client = ClientFactory.create_client(
-            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            # service_name="sysom_am"
         )
         
         
@@ -415,15 +392,8 @@ async def list_clusters(
     """
     try:
         # 使用ClientFactory创建客户端
-        # client = ClientFactory.create_client(
-        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
-        #     uid=uid,
-        #     service_name="sysom_am"
-        # )
         client = ClientFactory.create_client(
-            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            # service_name="sysom_am"
         )
         
         # 创建MCP Helper
@@ -488,29 +458,14 @@ async def list_instances(
     try:
         logger.info(f"creating client")
         # 使用ClientFactory创建客户端
-        # client = ClientFactory.create_client(
-        #     deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
-        #     uid=uid,
-        #     service_name="sysom_am"
-        # )
         client = ClientFactory.create_client(
-            # deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'alibabacloud_sdk'),
             uid=uid,
-            # service_name="sysom_am"
         )
         logger.info(f"created client")
         # 创建MCP Helper
         helper = AMMCPHelper(client)
         
         # 创建MCP请求
-        # mcp_request = ListInstancesMCPRequest(
-        #     instance=instance,
-        #     status=status,
-        #     region=region,
-        #     clusterId=clusterId,
-        #     current=current,
-        #     pageSize=pageSize,
-        # )
         mcp_request = sys_om20231230_models.ListInstancesRequest(
             instance=instance,
             status=status,
@@ -553,37 +508,3 @@ def main(run_mode: Literal["stdio", "sse"], host: str, port: int, path: str) -> 
 if __name__ == "__main__":
     main()
 
-# def create_mcp_server():
-#     return mcp
-
-# if __name__ == "__main__":
-#     import sys
-    
-#     # 检查命令行参数
-#     if len(sys.argv) > 1 and sys.argv[1] == "http":
-#         # HTTP 模式
-#         try:
-#             create_mcp_server().run(
-#                 transport="sse",
-#                 host="0.0.0.0",
-#                 port=7130,
-#                 path="/api/v1/am/mcp/"
-#             )
-#         except Exception as e:
-#             # 如果 sse 不支持，尝试其他方式
-#             logger.warning(f"尝试使用 SSE 模式失败: {e}")
-#             logger.info("尝试使用 HTTP 模式...")
-#             try:
-#                 create_mcp_server().run(
-#                     transport="http",
-#                     host="0.0.0.0",
-#                     port=7130,
-#                     path="/api/v1/am/mcp/"
-#                 )
-#             except Exception as e2:
-#                 logger.warning(f"HTTP 模式也失败: {e2}")
-#                 logger.info("回退到 stdio 模式")
-#                 create_mcp_server().run(transport="stdio")
-#     else:
-#         # 默认 stdio 模式
-#         create_mcp_server().run(transport="stdio")

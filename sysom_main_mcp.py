@@ -41,11 +41,13 @@ try:
     from tools.mem_diag_mcp import mcp as mem_mcp
     from tools.io_diag_mcp import mcp as io_mcp
     from tools.net_diag_mcp import mcp as net_mcp
+    from tools.sched_diag_mcp import mcp as sched_mcp
     from tools.other_diag_mcp import mcp as other_mcp
+    
     
     # 从各个服务的 MCP 实例中获取工具并添加到统一服务器
     # FastMCP 使用 _tool_manager._tools 字典存储工具
-    service_mcps = [am_mcp, mem_mcp, io_mcp, net_mcp, other_mcp]
+    service_mcps = [am_mcp, mem_mcp, io_mcp, net_mcp, sched_mcp, other_mcp]
     
     total_tools = 0
     for service_mcp in service_mcps:

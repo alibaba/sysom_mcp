@@ -13,8 +13,8 @@ from .logger_config import setup_logger
 from .mcp_helper import MCPHelper, MCPRequest, MCPResponse
 
 logger = setup_logger(__name__)
-from .openapi_client import OpenAPIClient, SysomFrameworkClient, AlibabaCloudSDKClient
-from .api_registry import APIRegistry, SupportMode
+from .openapi_client import OpenAPIClient, AlibabaCloudSDKClient
+from .api_registry import APIRegistry
 from alibabacloud_sysom20231230 import models as sysom_20231230_models
 from Tea.model import TeaModel
 
@@ -86,21 +86,12 @@ class DiagnosisMCPHelper(MCPHelper):
         # 1. 准备参数并发起诊断
         params_json = json.dumps(request.params, ensure_ascii=False)
         
-        # logger.error(f"invoke_diagnosis request: service_name: {request.service_name}, channel: {request.channel}, params: {params_json}")
-        
         api_name = "invoke_diagnosis"
-        url = "/api/v1/openapi/diagnosis/invokeDiagnosis"
         
         # 注册路由（如果尚未注册）
         registry = APIRegistry()
         if registry.get_route(api_name) is None:
-            # 注册Framework路由
-            registry.register_framework(
-                api_name=api_name,
-                url_pattern=url,
-                method="POST",
-                service_name="sysom_openapi"
-            )
+            
             # 注册SDK路由
             registry.register_sdk(
                 api_name=api_name,
@@ -109,21 +100,12 @@ class DiagnosisMCPHelper(MCPHelper):
                 client_method=lambda client, req: client.invoke_diagnosis_async(req)
             )
         
-        # 根据客户端类型准备参数
-        if isinstance(self.client, SysomFrameworkClient):
-            # Framework调用：传入字典
-            invoke_request = {
-                "service_name": request.service_name,
-                "channel": request.channel,
-                "params": params_json
-            }
-        else:
-            # SDK调用：传入TeaModel
-            invoke_request = sysom_20231230_models.InvokeDiagnosisRequest(
-                service_name=request.service_name,
-                channel=request.channel,
-                params=params_json
-            )
+        # SDK调用：传入TeaModel
+        invoke_request = sysom_20231230_models.InvokeDiagnosisRequest(
+            service_name=request.service_name,
+            channel=request.channel,
+            params=params_json
+        )
         
         # 调用invoke_diagnosis接口
         success, response_data, error_msg = await self.client.call_api(
@@ -152,12 +134,9 @@ class DiagnosisMCPHelper(MCPHelper):
                 task_id=""
             )
         
-        # logger.error(f"诊断任务已创建，task_id: {task_id}")
         
         # 2. 轮询获取结果
         code, message, result = await self._wait_for_result(task_id)
-        
-        # logger.error(f"wait_for_result result: code: {code}, message: {message}, result: {result is not None}")
         
         if code == DiagnoseResultCode.SUCCESS:
             # 解析结果
@@ -206,18 +185,10 @@ class DiagnosisMCPHelper(MCPHelper):
         start_time = asyncio.get_event_loop().time()
         
         api_name = "get_diagnosis_result"
-        url = "/api/v1/openapi/diagnosis/getDiagnosisResults"
         
         # 注册路由（如果尚未注册）
         registry = APIRegistry()
         if registry.get_route(api_name) is None:
-            # 注册Framework路由
-            registry.register_framework(
-                api_name=api_name,
-                url_pattern=url,
-                method="GET",
-                service_name="sysom_openapi"
-            )
             # 注册SDK路由
             registry.register_sdk(
                 api_name=api_name,
@@ -227,15 +198,11 @@ class DiagnosisMCPHelper(MCPHelper):
             )
         
         while (asyncio.get_event_loop().time() - start_time) < self.timeout:
-            # 根据客户端类型准备参数
-            if isinstance(self.client, SysomFrameworkClient):
-                # Framework调用：传入字典
-                get_result_request = {"task_id": task_id}
-            else:
-                # SDK调用：传入TeaModel
-                get_result_request = sysom_20231230_models.GetDiagnosisResultRequest(
-                    task_id=task_id
-                )
+
+            # SDK调用：传入TeaModel
+            get_result_request = sysom_20231230_models.GetDiagnosisResultRequest(
+                task_id=task_id
+            )
             
             # 调用get_diagnosis_result接口
             success, response_data, error_msg = await self.client.call_api(
@@ -259,7 +226,6 @@ class DiagnosisMCPHelper(MCPHelper):
                 elif task_status == "Success":
                     return DiagnoseResultCode.SUCCESS, "", data.get("result")
                 else:
-                    # logger.error(f"诊断任务状态: {task_status}, 继续等待...")
                     await asyncio.sleep(self.poll_interval)
             else:
                 return DiagnoseResultCode.GET_RESULT_FAILED, response_data.get("message", "获取结果失败"), None

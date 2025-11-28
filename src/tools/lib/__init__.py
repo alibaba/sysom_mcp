@@ -2,8 +2,7 @@
 
 提供OpenAPI调用和MCP工具开发的统一接口
 """
-from .openapi_client import OpenAPIClient, SysomFrameworkClient, AlibabaCloudSDKClient, ClientFactory
-# from .openapi_client import OpenAPIClient, AlibabaCloudSDKClient, ClientFactory
+from .openapi_client import OpenAPIClient, AlibabaCloudSDKClient, ClientFactory
 from .mcp_helper import MCPHelper, MCPRequest, MCPResponse
 from .am_helper import AMMCPHelper, AMResultCode
 from .diagnosis_helper import (
@@ -13,11 +12,9 @@ from .diagnosis_helper import (
     DiagnosisMCPResponse,
     DiagnoseResultCode
 )
-from .api_registry import SupportMode
 
 __all__ = [
     "OpenAPIClient",
-    "SysomFrameworkClient", 
     "AlibabaCloudSDKClient",
     "ClientFactory",
     "MCPHelper",
@@ -30,5 +27,4 @@ __all__ = [
     "DiagnoseResultCode",
     "AMMCPHelper",
     "AMResultCode",
-    "SupportMode",
 ]
