@@ -169,6 +169,42 @@ class ClientFactory:
         access_key_secret = kwargs.get("access_key_secret") or SERVICE_CONFIG.openapi.access_key_secret
         security_token = kwargs.get("security_token") or SERVICE_CONFIG.openapi.security_token
         region_id = kwargs.get("region_id", "cn-hangzhou")
+        role_arn = kwargs.get("security_token") or SERVICE_CONFIG.openapi.role_arn
+        logger.info(
+            f"创建OpenAPI客户端，模式：{mode}, access_key_id: {access_key_id} region_id: {region_id} access_key_secret: {access_key_secret} role_arn: {role_arn}"
+        )
+        if mode == "ram_role_arn":
+            import os
+            from alibabacloud_credentials.client import Client as CredentialClient
+            from alibabacloud_credentials.models import Config as CredentialConfig
+            from alibabacloud_tea_openapi import models as open_api_models
+
+            credentialsConfig = CredentialConfig(
+                type="ram_role_arn",
+                # 必填参数，此处以从环境变量中获取AccessKey ID为例
+                access_key_id=access_key_id,
+                # 必填参数，此处以从环境变量中获取AccessKey Secret为例
+                access_key_secret=access_key_secret,
+                # 必填参数，要扮演的RAM角色ARN，示例值：acs:ram::123456789012****:role/adminrole，支持通过环境变量ALIBABA_CLOUD_ROLE_ARN设置。
+                role_arn=role_arn,
+                # 可选参数，角色会话名称，支持通过环境变量ALIBABA_CLOUD_ROLE_SESSION_NAME设置。
+                role_session_name="SYSOM_MCP_SERVER",
+                # 可选参数，设置更小的权限策略，非必填。示例值：{"Statement": [{"Action": ["*"],"Effect": "Allow","Resource": ["*"]}],"Version":"1"}
+                # policy="<policy>",
+                # 可选参数，角色外部ID，主要功能是防止混淆代理人问题。
+                # external_id="<external_id>",
+                # 可选参数，会话过期时间，默认3600秒。
+                role_session_expiration=3600,
+            )
+
+            credentialsClient = CredentialClient(credentialsConfig)
+
+            credential = credentialsClient.get_credential()
+            mode = "sts"
+            access_key_id = credential.get_access_key_id()
+            access_key_secret = credential.get_access_key_secret()
+            security_token = credential.get_security_token()
+            logger.info(f"get new credential, access_key_id: {access_key_id} access_key_secret: {access_key_secret} security_token: {security_token}")
             
         return AlibabaCloudSDKClient(
             mode=mode,
