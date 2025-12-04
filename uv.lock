@@ -243,7 +243,7 @@ wheels = [
 
 [[package]]
 name = "alibabacloud-sysom20231230"
-version = "1.13.0"
+version = "1.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "alibabacloud-endpoint-util" },
@@ -251,9 +251,9 @@ dependencies = [
     { name = "alibabacloud-tea-openapi" },
     { name = "alibabacloud-tea-util" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/43/4453c8221a660ef7ee788f1ecd2b117998dd0b8dbdfbabd4433b18f2cf1b/alibabacloud_sysom20231230-1.13.0.tar.gz", hash = "sha256:31a4dde759dbd7e88e73e6c962ba4be904a62d51f492fe8b344160e757d83857", size = 38534, upload-time = "2025-11-25T18:48:24.923Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3a/41/b0e363599567133f356334b613102af12728d45fc324c869e4abd843ed44/alibabacloud_sysom20231230-1.14.0.tar.gz", hash = "sha256:a03889d354056e63e2f699e1f7c34560b21f061ad5c59dc122ab36b52d788c84", size = 40398, upload-time = "2025-12-03T18:16:54.954Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/50/d1/c0b48b5b283bfe3c2d5a00d428ac879ddb422a1d9f04b2b86c2361e38637/alibabacloud_sysom20231230-1.13.0-py3-none-any.whl", hash = "sha256:a9251a72376bf0c018010d825ae790b7d3ac19ca0222586947cc439468feaae6", size = 36598, upload-time = "2025-11-25T18:48:24.129Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/68/47ddb27c92b287efb978277c1f26c3ab7d955d25831334f3823fb663fa5b/alibabacloud_sysom20231230-1.14.0-py3-none-any.whl", hash = "sha256:d01fe4dd8fc6e33059a19b4ea07e2b2d0a560a9068bb739f2c29cc2d4e45b248", size = 38422, upload-time = "2025-12-03T18:16:53.76Z" },
 ]
 
 [[package]]
@@ -986,15 +986,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/89/76/c615883b7b521ead2944bb3480398cbb07e12b7b4e4d073d3752eb721558/frozenlist-1.8.0-cp314-cp314t-win_amd64.whl", hash = "sha256:06be8f67f39c8b1dc671f5d83aaefd3358ae5cdcf8314552c57e7ed3e6475bdd", size = 49451, upload-time = "2025-10-06T05:37:53.425Z" },
     { url = "https://files.pythonhosted.org/packages/e0/a3/5982da14e113d07b325230f95060e2169f5311b1017ea8af2a29b374c289/frozenlist-1.8.0-cp314-cp314t-win_arm64.whl", hash = "sha256:102e6314ca4da683dca92e3b1355490fed5f313b768500084fbe6371fddfdb79", size = 42507, upload-time = "2025-10-06T05:37:54.513Z" },
     { url = "https://files.pythonhosted.org/packages/9a/9a/e35b4a917281c0b8419d4207f4334c8e8c5dbf4f3f5f9ada73958d937dcc/frozenlist-1.8.0-py3-none-any.whl", hash = "sha256:0c18a16eab41e82c295618a77502e17b195883241c563b00f0aa5106fc4eaa0d", size = 13409, upload-time = "2025-10-06T05:38:16.721Z" },
-]
-
-[[package]]
-name = "fsspec"
-version = "2025.10.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/24/7f/2747c0d332b9acfa75dc84447a066fdf812b5a6b8d30472b74d309bfe8cb/fsspec-2025.10.0.tar.gz", hash = "sha256:b6789427626f068f9a83ca4e8a3cc050850b6c0f71f99ddb4f542b8266a26a59", size = 309285, upload-time = "2025-10-30T14:58:44.036Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/02/a6b21098b1d5d6249b7c5ab69dde30108a71e4e819d4a9778f1de1d5b70d/fsspec-2025.10.0-py3-none-any.whl", hash = "sha256:7c7712353ae7d875407f97715f0e1ffcc21e33d5b24556cb1e090ae9409ec61d", size = 200966, upload-time = "2025-10-30T14:58:42.53Z" },
 ]
 
 [[package]]
@@ -2361,19 +2352,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pyyaml-include"
-version = "2.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "fsspec" },
-    { name = "pyyaml" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/8c/4bdc1bd9676e9eb49237b3750562e9794b7585281448909fa1837c92ca27/pyyaml_include-2.2.tar.gz", hash = "sha256:6f0c7e2ac56cdd9cc305b04122817b55514e6ce8584869fae2bc2a4ef2e0d40f", size = 29854, upload-time = "2024-11-09T09:36:16.915Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/56/1f/ae83ff547e70cd3aeefe2ebaeeef41c4e1fd5ed2453396d249d17c3a7ead/pyyaml_include-2.2-py3-none-any.whl", hash = "sha256:489fff69f78bad8b9509d006297a0140fd91382a66775b8b1da0ce7e126c1815", size = 29565, upload-time = "2024-11-09T09:36:15.241Z" },
-]
-
-[[package]]
 name = "redis"
 version = "6.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2879,7 +2857,6 @@ dependencies = [
     { name = "python-multipart" },
     { name = "python-socketio" },
     { name = "pyyaml" },
-    { name = "pyyaml-include" },
     { name = "redis" },
     { name = "referencing" },
     { name = "regex" },
@@ -2914,7 +2891,7 @@ requires-dist = [
     { name = "aiosqlite", specifier = "==0.21.0" },
     { name = "alibabacloud-oss-v2", specifier = "==1.1.3" },
     { name = "alibabacloud-sts20150401", specifier = "==1.1.6" },
-    { name = "alibabacloud-sysom20231230", specifier = "==1.13.0" },
+    { name = "alibabacloud-sysom20231230", specifier = "==1.14.0" },
     { name = "anthropic", specifier = "==0.75.0" },
     { name = "anyio", specifier = "==4.9.0" },
     { name = "asgiref", specifier = "==3.8.1" },
@@ -2993,7 +2970,6 @@ requires-dist = [
     { name = "python-multipart", specifier = "==0.0.20" },
     { name = "python-socketio", specifier = "==5.15.0" },
     { name = "pyyaml", specifier = "==6.0.2" },
-    { name = "pyyaml-include", specifier = "==2.2" },
     { name = "redis", specifier = "==6.1.0" },
     { name = "referencing", specifier = "==0.36.2" },
     { name = "regex", specifier = "==2025.11.3" },
