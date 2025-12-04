@@ -133,6 +133,45 @@ uv run python sysom_main_mcp.py --sse --host 0.0.0.0 --port 7140
 
 更多使用说明请参考 [SYSOM_MAIN_MCP_README.md](./SYSOM_MAIN_MCP_README.md)。
 
+#### 测试 MCP 服务器
+
+项目提供了测试客户端，可以用于测试 MCP 服务器的功能：
+
+```bash
+# 使用测试客户端测试统一 MCP 服务器
+uv run python src/tests/test_client.py
+```
+
+测试客户端会：
+1. 自动连接到统一 MCP 服务器 `sysom_main_mcp.py`
+2. 列出所有可用的工具
+3. 进入交互式聊天模式，可以使用自然语言查询并调用工具
+
+**测试客户端功能**：
+- 支持使用 Qwen 模型进行自然语言交互
+- 自动调用合适的 MCP 工具
+- 支持并行工具调用
+- 提供详细的工具调用日志
+
+**注意事项**：
+- 确保已设置 `DASHSCOPE_API_KEY` 环境变量（在 `.env` 文件中）
+- 测试客户端使用 stdio 模式连接 MCP 服务器
+- 输入 `q` 或 `quit` 退出交互式模式
+
+**其他测试方法**：
+
+项目还提供了基于 agentscope 的测试客户端：
+
+```bash
+# 使用 agentscope 测试客户端（需要 agentscope 库）
+uv run python src/tests/test_sysom_main_mcp.py
+```
+
+该测试客户端会：
+- 自动启动 MCP 服务器（stdio 模式）
+- 创建 ReAct Agent 进行测试
+- 支持交互式测试模式
+
 ### 项目结构
 
 ```

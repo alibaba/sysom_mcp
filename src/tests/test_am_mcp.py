@@ -32,9 +32,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 获取项目根目录
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 # 使用直接运行脚本文件的方式启动 am_mcp 服务
-MCP_SERVER_SCRIPT = PROJECT_ROOT / "mcp" / "am_mcp.py"
+MCP_SERVER_SCRIPT = PROJECT_ROOT / "src" / "tools" / "am_mcp.py"
 # 注意：路径需要与服务器实际监听的路径一致（不带尾部斜杠）
 MCP_SERVER_URL = "http://127.0.0.1:7130/mcp/am"
 
@@ -61,22 +61,21 @@ class ListPodsOfInstanceTestParams:
     """list_pods_of_instance测试参数"""
     uid: str
     instance: str
-    region: Optional[str] = None
-    status: Optional[str] = None
     cluster_id: Optional[str] = None
-    gpu: Optional[str] = None
-    install_channel: Optional[str] = "console"
+    current: Optional[int] = 1
+    pageSize: Optional[int] = 10
 
 
 @dataclass
 class ListClustersTestParams:
     """list_clusters测试参数"""
     uid: str
-    id: Optional[str] = None  # 集群ID（用于查询）
     name: Optional[str] = None
     cluster_id: Optional[str] = None  # 集群ID（用于过滤）
     cluster_type: Optional[str] = None
     cluster_status: Optional[str] = None
+    current: Optional[int] = 1
+    pageSize: Optional[int] = 10
 
 
 @dataclass
@@ -87,8 +86,8 @@ class ListInstancesTestParams:
     status: Optional[str] = None
     region: Optional[str] = None
     cluster_id: Optional[str] = None
-    gpu: Optional[str] = None
-    install_channel: Optional[str] = "console"
+    current: Optional[int] = 1
+    pageSize: Optional[int] = 10
 
 
 # ============================================================================
@@ -134,7 +133,12 @@ LIST_PODS_OF_INSTANCE_TEST_CASES: List[ListPodsOfInstanceTestParams] = [
     ListPodsOfInstanceTestParams(
         uid="1418925853835361",
         instance="i-bp11jhwbwn9b8ln36i9e",
-        region="cn-hangzhou",
+    ),
+    # 带集群ID的测试
+    ListPodsOfInstanceTestParams(
+        uid="1418925853835361",
+        instance="i-bp11jhwbwn9b8ln36i9e",
+        cluster_id="c7fb20635900c4e69bf6a60af743c0a7a",
     ),
 ]
 
@@ -147,7 +151,7 @@ LIST_CLUSTERS_TEST_CASES: List[ListClustersTestParams] = [
     # 按集群ID查询
     ListClustersTestParams(
         uid="1418925853835361",
-        id="c7fb20635900c4e69bf6a60af743c0a7a",
+        cluster_id="c7fb20635900c4e69bf6a60af743c0a7a",
     ),
     # 按集群名称查询
     ListClustersTestParams(
@@ -201,19 +205,30 @@ def start_mcp_server():
     
     # 启动服务器进程（直接运行脚本文件，SSE 模式）
     # 确保传递正确的 host、port 和 path 参数，与 MCP_SERVER_URL 匹配
+    # 设置 PYTHONPATH 以确保能正确导入 lib 模块
+    src_dir = PROJECT_ROOT / "src"
+    tools_dir = src_dir / "tools"
+    env = os.environ.copy()
+    pythonpath = env.get("PYTHONPATH", "")
+    if pythonpath:
+        env["PYTHONPATH"] = f"{str(tools_dir)}:{pythonpath}"
+    else:
+        env["PYTHONPATH"] = str(tools_dir)
+    
     try:
         _mcp_server_process = subprocess.Popen(
             [
                 sys.executable,
                 str(MCP_SERVER_SCRIPT),
-                "--sse",
+                "--streamable-http",
                 # "--host", "127.0.0.1",
                 # "--port", "7130",
                 # "--path", "/mcp/am",
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
-            cwd=str(PROJECT_ROOT),  # 在 src 目录下运行
+            cwd=str(PROJECT_ROOT),  # 在项目根目录下运行
+            env=env,  # 传递环境变量
             text=True,
             bufsize=1,
         )
@@ -387,10 +402,10 @@ def build_list_pods_of_instance_prompt(params: ListPodsOfInstanceTestParams) -> 
     """构建list_pods_of_instance工具的调用提示"""
     parts = [f"调用list_pods_of_instance工具，帮我列出{params.instance}实例下的Pod列表"]
     
-    if params.region:
-        parts.append(f"，region是{params.region}")
     if params.cluster_id:
         parts.append(f"，集群ID是{params.cluster_id}")
+    if params.current != 1 or params.pageSize != 10:
+        parts.append(f"，页码是{params.current}，每页数量是{params.pageSize}")
     
     parts.append(f"，uid是{params.uid}")
     
@@ -401,14 +416,16 @@ def build_list_clusters_prompt(params: ListClustersTestParams) -> str:
     """构建list_clusters工具的调用提示"""
     parts = [f"调用list_clusters工具，帮我列出集群列表"]
     
-    if params.id:
-        parts.append(f"，集群ID是{params.id}")
+    if params.cluster_id:
+        parts.append(f"，集群ID是{params.cluster_id}")
     if params.name:
         parts.append(f"，集群名称是{params.name}")
     if params.cluster_type:
         parts.append(f"，集群类型是{params.cluster_type}")
     if params.cluster_status:
         parts.append(f"，集群状态是{params.cluster_status}")
+    if params.current != 1 or params.pageSize != 10:
+        parts.append(f"，页码是{params.current}，每页数量是{params.pageSize}")
     
     parts.append(f"，uid是{params.uid}")
     
@@ -427,6 +444,8 @@ def build_list_instances_prompt(params: ListInstancesTestParams) -> str:
         parts.append(f"，集群ID是{params.cluster_id}")
     if params.status:
         parts.append(f"，实例状态是{params.status}")
+    if params.current != 1 or params.pageSize != 10:
+        parts.append(f"，页码是{params.current}，每页数量是{params.pageSize}")
     
     parts.append(f"，uid是{params.uid}")
     
@@ -586,8 +605,7 @@ async def run_all_tests():
 
 async def main():
     """主函数"""
-    # await run_all_tests()
-    await create_test_agent()
+    await run_all_tests()
 
 
 if __name__ == "__main__":

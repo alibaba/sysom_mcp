@@ -76,16 +76,33 @@ class MCPClient:
         print(f"\n正在连接 {len(server_script_paths)} 个 MCP 服务器...")
         
         for server_script_path in server_script_paths:
-            is_python = server_script_path.endswith('.py')
-            is_js = server_script_path.endswith('.js')
+            # 转换为 Path 对象以便处理
+            script_path = Path(server_script_path)
+            if not script_path.is_absolute():
+                # 如果是相对路径，相对于项目根目录
+                script_path = project_root / script_path
+            
+            if not script_path.exists():
+                raise FileNotFoundError(f"MCP 服务器脚本不存在: {script_path}")
+            
+            is_python = script_path.suffix == '.py'
+            is_js = script_path.suffix == '.js'
             if not (is_python or is_js):
-                raise ValueError(f"Server script must be a .py or .js file: {server_script_path}")
+                raise ValueError(f"Server script must be a .py or .js file: {script_path}")
 
-            command = "python" if is_python else "node"
+            # 对于 Python 脚本，使用 uv run 来运行（确保依赖正确加载）
+            if is_python:
+                command = "uv"
+                args = ["run", "python", str(script_path), "--stdio"]
+            else:
+                command = "node"
+                args = [str(script_path)]
+            
             server_params = StdioServerParameters(
                 command=command,
-                args=[server_script_path],
-                env=None
+                args=args,
+                env=None,
+                cwd=str(project_root)  # 设置工作目录为项目根目录
             )
 
             stdio_transport = await self.exit_stack.enter_async_context(stdio_client(server_params))
@@ -335,23 +352,37 @@ class MCPClient:
         await self.exit_stack.aclose()
 
 async def main():
-    mcp_list = [
-        "src/mcp/am_mcp.py",
-        "src/mcp/mem_diag_mcp.py",
-        "src/mcp/io_diag_mcp.py",
-        "src/mcp/net_diag_mcp.py",
-        "src/mcp/other_diag_mcp.py"
+    # 方式一：使用统一 MCP 服务器（推荐）
+    # 统一服务器聚合了所有工具，只需要连接一个服务器
+    unified_server = str(project_root / "sysom_main_mcp.py")
+    
+    # 方式二：连接多个独立的 MCP 服务器
+    # 如果需要分别连接各个服务，可以使用以下列表
+    individual_servers = [
+        str(project_root / "src" / "tools" / "am_mcp.py"),
+        str(project_root / "src" / "tools" / "mem_diag_mcp.py"),
+        str(project_root / "src" / "tools" / "io_diag_mcp.py"),
+        str(project_root / "src" / "tools" / "net_diag_mcp.py"),
+        str(project_root / "src" / "tools" / "sched_diag_mcp.py"),
+        str(project_root / "src" / "tools" / "other_diag_mcp.py"),
     ]
-
+    
     client = MCPClient()
     try:
-        # 新的多服务器连接方式
-        await client.connect_to_servers(mcp_list)
+        # 使用统一服务器（推荐方式）
+        print("=" * 60)
+        print("使用统一 MCP 服务器（推荐）")
+        print("=" * 60)
+        await client.connect_to_servers([unified_server])
         await client.chat_loop()
         
-        # 原来的单服务器连接方式（已注释，保留用于向后兼容）
-        # await client.connect_to_server(mcp_list[4])
+        # 如果需要使用多个独立服务器，取消下面的注释
+        # print("=" * 60)
+        # print("使用多个独立的 MCP 服务器")
+        # print("=" * 60)
+        # await client.connect_to_servers(individual_servers)
         # await client.chat_loop()
+        
     finally:
         await client.cleanup()
 

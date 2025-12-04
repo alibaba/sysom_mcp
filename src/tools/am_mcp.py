@@ -489,16 +489,21 @@ async def list_instances(
 @click.command()
 @click.option("--stdio", "run_mode", flag_value="stdio", default=True, help="Run in stdio mode")
 @click.option("--sse", "run_mode", flag_value="sse", help="Run in SSE mode")
-@click.option("--host", default="127.0.0.1", help="Host to bind to (for SSE mode, default: 127.0.0.1)")
-@click.option("--port", default=7130, type=int, help="Port to bind to (for SSE mode, default: 7130)")
-@click.option("--path", default="/mcp/am", help="Path for SSE endpoint (default: /mcp/am)")
-def main(run_mode: Literal["stdio", "sse"], host: str, port: int, path: str) -> None:
-    """Run MCP server in stdio or SSE mode"""
+@click.option("--streamable-http", "run_mode", flag_value="streamable-http", help="Run in streamable-http mode")
+@click.option("--host", default="127.0.0.1", help="Host to bind to (for SSE/streamable-http mode, default: 127.0.0.1)")
+@click.option("--port", default=7130, type=int, help="Port to bind to (for SSE/streamable-http mode, default: 7130)")
+@click.option("--path", default="/mcp/am", help="Path for SSE/streamable-http endpoint (default: /mcp/am)")
+def main(run_mode: Literal["stdio", "sse", "streamable-http"], host: str, port: int, path: str) -> None:
+    """Run MCP server in stdio, SSE, or streamable-http mode"""
     if run_mode == "sse":
         # SSE 模式：直接使用 mcp.run()，它应该支持这些参数
         logger.info(f"Starting MCP server in SSE mode on {host}:{port}{path}")
         # FastMCP 的 run() 方法应该支持 transport、host、port、path 参数
         mcp.run(transport="sse", host=host, port=port, path=path)
+    elif run_mode == "streamable-http":
+        # streamable-http 模式
+        logger.info(f"Starting MCP server in streamable-http mode on {host}:{port}{path}")
+        mcp.run(transport="streamable-http", host=host, port=port, path=path)
     else:
         # stdio 模式
         logger.info("Starting MCP server in stdio mode")
