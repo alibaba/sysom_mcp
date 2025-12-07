@@ -83,6 +83,9 @@ npm install -g @qwen-code/qwen-code@latest
 
 **注意**：安装 Qwen Code 需要 Node.js 和 npm。如果尚未安装，请先安装 Node.js。
 
+#### 获取api_key和免费额度
+参考官网文档https://help.aliyun.com/zh/model-studio/get-api-key，开通百炼，获取免费额度
+
 #### 在 Qwen Code 中配置
 
 修改 `/root/.qwen/settings.json`：
