@@ -49,9 +49,9 @@ async def memgraph(
 ) -> DiagnosisMCPResponse:
     """
     重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     memgraph（内存全景分析）工具：内存全景分析适用于内存占用较高但无法明确识别具体内存占用情况的场景。通过使用内存全景分析诊断功能，可以扫描当前系统的内存占用状态，详细拆解内存使用情况。系统内存与应用内存的分布，并列出当前Top 30的应用内存使用、文件缓存、共享内存缓存占用情况的排序。
     必需参数：
@@ -176,9 +176,9 @@ async def javamem(
 ) -> DiagnosisMCPResponse:
     """
     重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     javamem（Java内存诊断）工具，主要用于诊断Java应用的内存使用情况，帮助用户了解Java堆内存和非堆内存的分布和组成，识别潜在的内存泄漏和内存溢出问题，实现Java内存的可维可测可追踪。
     使用场景：Java应用内存占用较高，无法明确识别具体内存占用情况。
@@ -301,9 +301,9 @@ async def oomcheck(
 ) -> DiagnosisMCPResponse:
     """
     重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     oomcheck（OOM诊断）工具，主要用于分析和界定OOM（Out of memory）问题，找出导致OOM的主要原因，并给出相应的处理建议，帮助用户解决OOM问题，提高系统的可用性和性能。
     使用场景：发生OOM问题，需要诊断OOM原因，常见的OOM场景包括：

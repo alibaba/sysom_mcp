@@ -52,7 +52,7 @@ async def initial_sysom(
             uid=uid
         )
         helper = InitialSysomMCPHelper(client)
-        response = await helper.initial_sysom(check_only=False)
+        response = await helper.initial_sysom(check_only=False, uid=uid)
         return InitialSysomMCPResponse(**response.model_dump())
     except Exception as e:
         logger.error(f"initial_sysom failed: {e}")
@@ -70,19 +70,21 @@ async def check_sysom_initialed(
     ctx: Context | None = None,
 ):
     """
-    检查sysom服务是否已开通。这是所有sysom MCP工具调用前的必要检查步骤。
+    检查sysom服务是否已开通。此工具只需要在用户第一次调用sysom MCP工具时调用一次即可。
     
     重要提示：
-        在调用任何其他sysom MCP工具（如诊断工具、实例管理工具等）之前，必须先调用此工具检查用户是否已开通sysom服务。
+        此工具只需要在用户第一次调用sysom MCP工具（如诊断工具、实例管理工具等）时调用一次。
+        如果之前已经调用过此工具并确认用户已开通sysom服务，则后续调用其他sysom MCP工具时不需要再次调用此工具。
         
         检查结果处理：
-        1. 如果用户已开通sysom服务（检查结果为已开通），则可以继续调用其他sysom MCP工具进行后续操作。
+        1. 如果用户已开通sysom服务（检查结果为已开通），则可以继续调用其他sysom MCP工具进行后续操作，后续调用时不需要再次检查。
         2. 如果用户未开通sysom服务（检查结果为未开通），则必须询问用户："需要帮您开通sysom吗，sysom是免费的服务，开通不会产生任何费用"。
            - 如果用户同意开通，则调用 initial_sysom 工具为用户开通服务。
            - 如果用户拒绝或表示不需要，则不应调用任何其他sysom MCP工具，并告知用户需要先开通sysom服务才能使用相关功能，用户也可以去控制台https://alinux.console.aliyun.com进行开通。
     
     功能描述：
         检查指定用户的sysom服务开通状态。此工具不会实际开通服务，仅用于检查状态。
+        检查结果会被缓存，如果用户已开通，后续调用其他sysom MCP工具时不需要再次检查。
     
     参数说明：
         uid (str): 用户ID（必填）
@@ -94,11 +96,25 @@ async def check_sysom_initialed(
             - data: 响应数据（包含开通状态详情）
     """
     try:
+        # 先检查缓存
+        from lib.initial_helper import get_sysom_initialed_status
+        cached_status = get_sysom_initialed_status(uid)
+        
+        if cached_status is True:
+            # 缓存中显示已开通，直接返回成功
+            logger.info(f"用户 {uid} 的开通状态已缓存，已开通，跳过API调用")
+            return InitialSysomMCPResponse(
+                code=InitialResultCode.SUCCESS,
+                message="用户已开通sysom服务（来自缓存）",
+                data={"initialed": True, "from_cache": True}
+            )
+        
+        # 缓存中没有或显示未开通，调用API检查
         client = ClientFactory.create_client(
             uid=uid
         )
         helper = InitialSysomMCPHelper(client)
-        response = await helper.initial_sysom(check_only=True)
+        response = await helper.initial_sysom(check_only=True, uid=uid)
         return InitialSysomMCPResponse(**response.model_dump())
     except Exception as e:
         logger.error(f"check_sysom_initialed failed: {e}")

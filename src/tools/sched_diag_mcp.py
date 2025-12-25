@@ -39,10 +39,10 @@ async def delay(
     threshold: Optional[str] = Field(None, description="抖动阈值(ms)"),
     ctx: Context | None = None,
 ) -> DiagnosisMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     delay（调度抖动诊断）工具主要分析CPU长时间不进行任务切换导致用户态业务进程长期得不到调度引发的问题（例如内存回收等场景）。
     仅支持节点诊断模式，channel必须为ecs。
@@ -124,10 +124,10 @@ async def loadtask(
     instance: str = Field(..., description="实例ID"),
     ctx: Context | None = None,
 ) -> DiagnosisMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     loadtask（系统负载诊断）工具主要分析系统在一分钟内的平均负载(load1指标)异常原因机器详细信息。
     仅支持节点诊断模式，channel必须为ecs。

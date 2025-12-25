@@ -102,10 +102,10 @@ async def list_all_instances(
     nextToken: Optional[str] = Field(None, description="分页游标，不为空表示还有更多数据"),
     ctx: Context | None = None,
 ) -> ListAllInstancesMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     列出所有实例，支持按地域、纳管类型、实例类型等条件筛选
     
@@ -312,10 +312,10 @@ async def list_pods_of_instance(
     pageSize: Optional[int] = Field(10, description="每页数量"),
     ctx: Context | None = None,
 ) -> ListPodsOfInstanceMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     列出指定实例下的Pod列表
     
@@ -380,10 +380,10 @@ async def list_clusters(
     pageSize: Optional[int] = Field(10, description="每页数量"),
     ctx: Context | None = None,
 ) -> ListClustersMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     列出集群列表，支持按名称、类型、状态等条件筛选
     
@@ -449,10 +449,10 @@ async def list_instances(
     pageSize: Optional[int] = Field(10, description="每页数量"),
     ctx: Context | None = None,
 ) -> ListInstancesMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     列出实例列表，支持按实例ID、状态、地域、集群等条件筛选
     

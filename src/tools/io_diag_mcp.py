@@ -42,9 +42,9 @@ async def iofsstat(
 ) -> DiagnosisMCPResponse:
     """
     重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     iofsstat（IO流量分析）工具主要分析系统中IO流量的归属，结果包含每个磁盘/分区的IO流量统计列表以及每个进程的IO流量统计列表。
     使用场景：实例中存在IO Burst问题，需要分析IO流量的归属。

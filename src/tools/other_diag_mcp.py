@@ -36,10 +36,10 @@ async def vmcore(
     instance: str = Field(..., description="实例ID"),
     ctx: Context | None = None,
 ) -> DiagnosisMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     vmcore（宕机诊断）工具主要分析操作系统崩溃的原因，通过分析内核panic产生的core dump文件，结合dmesg日志，分析操作系统崩溃的原因。
     仅支持节点诊断模式，channel必须为ecs。
@@ -112,10 +112,10 @@ async def diskanalysis(
     instance: str = Field(..., description="实例ID"),
     ctx: Context | None = None,
 ) -> DiagnosisMCPResponse:
-    """重要提示：
-        在调用此工具之前，必须先调用 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+    """    重要提示：
+        此工具只需要在用户第一次调用sysom MCP工具时调用一次 check_sysom_initialed 工具检查用户是否已开通sysom服务。
+        如果之前已经调用过 check_sysom_initialed 并确认用户已开通sysom服务，则后续调用此工具时不需要再次检查。
         如果用户未开通sysom服务，必须先调用 initial_sysom 工具开通服务，或引导用户前往 https://alinux.console.aliyun.com 进行开通。
-        只有在确认用户已开通sysom服务后，才能调用此工具。
     
     diskanalysis（磁盘分析诊断）工具主要分析系统中磁盘的使用情况。
     仅支持节点诊断模式，channel必须为ecs。

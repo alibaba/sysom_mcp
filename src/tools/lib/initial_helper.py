@@ -18,14 +18,60 @@ class InitialResultCode:
     SUCCESS = "Success"
     ERROR = "Error"
 
+# 全局缓存：存储用户的开通状态
+# key: uid (str), value: bool (True表示已开通，False表示未开通)
+_sysom_initialed_cache: Dict[str, bool] = {}
+
+def get_sysom_initialed_status(uid: str) -> Optional[bool]:
+    """
+    获取用户的开通状态（从缓存）
+    
+    Args:
+        uid: 用户ID
+        
+    Returns:
+        True表示已开通，False表示未开通，None表示未缓存
+    """
+    return _sysom_initialed_cache.get(uid)
+
+def set_sysom_initialed_status(uid: str, is_initialed: bool) -> None:
+    """
+    设置用户的开通状态（写入缓存）
+    
+    Args:
+        uid: 用户ID
+        is_initialed: 是否已开通
+    """
+    _sysom_initialed_cache[uid] = is_initialed
+    logger.info(f"缓存用户 {uid} 的开通状态: {is_initialed}")
+
+def clear_sysom_initialed_cache(uid: Optional[str] = None) -> None:
+    """
+    清除缓存
+    
+    Args:
+        uid: 用户ID，如果为None则清除所有缓存
+    """
+    if uid is None:
+        _sysom_initialed_cache.clear()
+        logger.info("已清除所有用户的开通状态缓存")
+    else:
+        _sysom_initialed_cache.pop(uid, None)
+        logger.info(f"已清除用户 {uid} 的开通状态缓存")
+
 class InitialSysomMCPHelper(MCPHelper):
     """开通sysom MCP Helper实现"""
     async def initial_sysom(
         self,
         check_only: bool = False,
+        uid: Optional[str] = None,
     ) -> MCPResponse:
         """
         开通sysom MCP工具
+        
+        Args:
+            check_only: 是否仅检查（不实际开通）
+            uid: 用户ID（用于缓存）
         """
         
         api_name = "initial_sysom"
@@ -52,11 +98,24 @@ class InitialSysomMCPHelper(MCPHelper):
             request=initial_request
         )
         if not success:
+            # 如果检查失败，缓存未开通状态
+            if check_only and uid:
+                set_sysom_initialed_status(uid, False)
             return MCPResponse(
                 code=InitialResultCode.ERROR,
                 message=error_msg or "开通sysom失败，请前往https://alinux.console.aliyun.com进行开通",
                 data=None
             )
+        
+        # 如果成功，更新缓存
+        if uid:
+            if check_only:
+                # 检查成功，缓存已开通状态
+                set_sysom_initialed_status(uid, True)
+            else:
+                # 实际开通成功，缓存已开通状态
+                set_sysom_initialed_status(uid, True)
+        
         return MCPResponse(
             code=InitialResultCode.SUCCESS,
             message="initial sysom调用成功",
