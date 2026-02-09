@@ -1,7 +1,7 @@
 """API路由注册表
 
 统一管理OpenAPI的URL到模型和方法的映射关系
-支持接口级别的调用方式限制，Framework和SDK两种调用方式分离设计
+支持接口级别的调用方式限制
 """
 import threading
 from typing import Dict, Type, Callable, Optional, Any
@@ -31,7 +31,7 @@ class SDKRoute:
 
 
 class APIRoute:
-    """API路由信息（包含Framework和SDK两种调用方式的信息）"""
+    """API路由信息"""
     def __init__(
         self,
         api_name: str,

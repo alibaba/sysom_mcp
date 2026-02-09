@@ -1,8 +1,7 @@
 """OpenAPI客户端抽象层
 
-提供统一的OpenAPI调用接口，支持两种实现方式：
-1. SysomFrameworkClient: 通过SysomFramework微服务间发现调用（集群内部）
-2. AlibabaCloudSDKClient: 通过阿里云OpenAPI SDK调用（公网）
+提供统一的OpenAPI调用接口，支持如下实现方式：
+1. AlibabaCloudSDKClient: 通过阿里云OpenAPI SDK调用（公网）
 """
 from abc import ABC, abstractmethod
 from typing import Optional, Type, Tuple, Any, Dict, Union
@@ -111,7 +110,7 @@ class AlibabaCloudSDKClient(OpenAPIClient):
             # 获取SDK路由信息
             sdk_route = self.registry.get_sdk_route(api_name)
             if sdk_route is None:
-                return False, None, f"接口 {api_name} 未注册SDK路由或仅支持Framework调用"
+                return False, None, f"接口 {api_name} 未注册SDK路由"
             
             if request is None:
                 return False, None, "SDK调用需要TeaModel类型的请求对象"
@@ -157,7 +156,7 @@ class ClientFactory:
         创建OpenAPI客户端实例
         
         Args:
-            uid: 用户ID（sysom_framework模式需要）
+            uid: 用户ID
             **kwargs: 其他参数（alibabacloud_sdk模式可能需要access_key_id等）
             
         Returns:

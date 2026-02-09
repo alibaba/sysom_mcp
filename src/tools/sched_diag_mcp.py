@@ -71,7 +71,6 @@ async def delay(
     """
     try:
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'sysom_framework'),
             uid=uid
         )
         helper = DiagnosisMCPHelper(client, timeout=150, poll_interval=1)
@@ -153,7 +152,6 @@ async def loadtask(
     """
     try:
         client = ClientFactory.create_client(
-            deploy_mode=getattr(SERVICE_CONFIG, 'deploy_mode', 'sysom_framework'),
             uid=uid
         )
         helper = DiagnosisMCPHelper(client, timeout=150, poll_interval=1)
