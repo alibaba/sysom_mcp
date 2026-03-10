@@ -84,7 +84,11 @@ class DiagnosisMCPHelper(MCPHelper):
             DiagnosisMCPResponse: 诊断响应
         """
         # 1. 准备参数并发起诊断
-        params_json = json.dumps(request.params, ensure_ascii=False)
+        # 确保 params 包含 source 字段，没有则添加 source=mcp
+        params = dict(request.params)
+        if "source" not in params:
+            params["source"] = "mcp"
+        params_json = json.dumps(params, ensure_ascii=False)
         
         api_name = "invoke_diagnosis"
         
